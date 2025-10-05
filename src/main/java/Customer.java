@@ -6,6 +6,7 @@ public class Customer {
     private CustomerType customerType;
     private Account account;
     private double companyOverdraftDiscount = 1;
+    private CustomerPrinter printer;
 
 
     public Customer(String name, String surname, String email, CustomerType customerType, Account account) {
@@ -14,6 +15,7 @@ public class Customer {
         this.email = email;
         this.customerType = customerType;
         this.account = account;
+        this.printer = new CustomerPrinter(this, account);
     }
 
     // use only to create companies
@@ -23,6 +25,7 @@ public class Customer {
         this.customerType = CustomerType.COMPANY;
         this.account = account;
         this.companyOverdraftDiscount = companyOverdraftDiscount;
+        this.printer = new CustomerPrinter(this, account);
     }
 
     public void withdraw(double sum, String currency) {
@@ -108,6 +111,10 @@ public class Customer {
         return name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -128,20 +135,16 @@ public class Customer {
         this.customerType = customerType;
     }
 
+    // Delegate to CustomerPrinter
     public String printCustomerDaysOverdrawn() {
-        return getFullName() + "Account: IBAN: " + account.getIban() + ", Days Overdrawn: " + account.getDaysOverdrawn();
+        return printer.printCustomerDaysOverdrawn();
     }
 
     public String printCustomerMoney() {
-        return getFullName() + "Account: IBAN: " + account.getIban() + ", Money: " + account.getMoney();
+        return printer.printCustomerMoney();
     }
 
     public String printCustomerAccount() {
-        return "Account: IBAN: " + account.getIban() + ", Money: "
-                + account.getMoney() + ", Account type: " + account.getType();
-    }
-
-    private String getFullName() {
-        return name + " " + surname + " ";
+        return printer.printCustomerAccount();
     }
 }
