@@ -37,14 +37,22 @@ public class Account {
         }
     }
 
-    // MOVED FROM Customer - this method belongs here
     public void withdraw(double sum, WithdrawalStrategy strategy, double companyOverdraftDiscount) {
         strategy.withdraw(this, sum, companyOverdraftDiscount);
     }
 
-    // MOVED FROM CustomerPrinter - this method belongs here
     public String printAccountInfo() {
         return "Account: IBAN: " + iban + ", Money: " + money + ", Account type: " + type;
+    }
+
+    // MOVED FROM CustomerPrinter - uses only Account data
+    public String printAccountDaysOverdrawn() {
+        return "Account: IBAN: " + iban + ", Days Overdrawn: " + daysOverdrawn;
+    }
+
+    // MOVED FROM CustomerPrinter - uses only Account data
+    public String printAccountMoney() {
+        return "Account: IBAN: " + iban + ", Money: " + money;
     }
 
     public int getDaysOverdrawn() {
@@ -77,10 +85,6 @@ public class Account {
 
     public AccountType getType() {
         return type;
-    }
-
-    public String printCustomer() {
-        return customer.getName() + " " + customer.getEmail();
     }
 
     public String getCurrency() {

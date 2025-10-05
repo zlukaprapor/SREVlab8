@@ -6,7 +6,6 @@ public class Customer {
     private CustomerType customerType;
     private Account account;
     private double companyOverdraftDiscount = 1;
-    private CustomerPrinter printer;
     private WithdrawalStrategy withdrawalStrategy;
 
 
@@ -16,7 +15,6 @@ public class Customer {
         this.email = email;
         this.customerType = customerType;
         this.account = account;
-        this.printer = new CustomerPrinter(this, account);
         this.withdrawalStrategy = WithdrawalStrategyFactory.getStrategy(customerType, account.getType());
     }
 
@@ -26,7 +24,6 @@ public class Customer {
         this.customerType = CustomerType.COMPANY;
         this.account = account;
         this.companyOverdraftDiscount = companyOverdraftDiscount;
-        this.printer = new CustomerPrinter(this, account);
         this.withdrawalStrategy = WithdrawalStrategyFactory.getStrategy(CustomerType.COMPANY, account.getType());
     }
 
@@ -39,6 +36,11 @@ public class Customer {
         if (!account.getCurrency().equals(currency)) {
             throw new RuntimeException("Can't extract withdraw " + currency);
         }
+    }
+
+    // MOVED FROM Account - uses only Customer data
+    public String printCustomer() {
+        return name + " " + email;
     }
 
     public String getName() {
@@ -70,14 +72,18 @@ public class Customer {
     }
 
     public String printCustomerDaysOverdrawn() {
-        return printer.printCustomerDaysOverdrawn();
+        return getFullName() + account.printAccountDaysOverdrawn();
     }
 
     public String printCustomerMoney() {
-        return printer.printCustomerMoney();
+        return getFullName() + account.printAccountMoney();
     }
 
     public String printCustomerAccount() {
         return account.printAccountInfo();
+    }
+
+    private String getFullName() {
+        return name + " " + surname + " ";
     }
 }
