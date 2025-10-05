@@ -15,7 +15,7 @@ public class Customer {
         this.email = email;
         this.customerType = customerType;
         this.account = account;
-        this.withdrawalStrategy = WithdrawalStrategyFactory.getStrategy(customerType, account.getType());
+        this.withdrawalStrategy = WithdrawalStrategyFactory.getStrategy(customerType, account.isPremium());
     }
 
     public Customer(String name, String email, Account account, double companyOverdraftDiscount) {
@@ -24,7 +24,7 @@ public class Customer {
         this.customerType = CustomerType.COMPANY;
         this.account = account;
         this.companyOverdraftDiscount = companyOverdraftDiscount;
-        this.withdrawalStrategy = WithdrawalStrategyFactory.getStrategy(CustomerType.COMPANY, account.getType());
+        this.withdrawalStrategy = WithdrawalStrategyFactory.getStrategy(CustomerType.COMPANY, account.isPremium());
     }
 
     public void withdraw(double sum, String currency) {

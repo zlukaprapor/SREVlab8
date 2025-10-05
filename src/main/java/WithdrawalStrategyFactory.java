@@ -1,14 +1,14 @@
 public class WithdrawalStrategyFactory {
 
-    public static WithdrawalStrategy getStrategy(CustomerType customerType, AccountType accountType) {
+    public static WithdrawalStrategy getStrategy(CustomerType customerType, boolean isPremium) {
         if (customerType == CustomerType.PERSON) {
-            if (accountType.isPremium()) {
+            if (isPremium) {
                 return new PersonPremiumWithdrawal();
             } else {
                 return new PersonNormalWithdrawal();
             }
         } else {
-            if (accountType.isPremium()) {
+            if (isPremium) {
                 return new CompanyPremiumWithdrawal();
             } else {
                 return new CompanyNormalWithdrawal();

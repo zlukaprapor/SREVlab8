@@ -1,7 +1,8 @@
+@Deprecated
 public class AccountType {
     private boolean premium;
 
-    AccountType(boolean premium) {
+    public AccountType(boolean premium) {
         this.premium = premium;
     }
 
