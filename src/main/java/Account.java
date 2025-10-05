@@ -36,8 +36,11 @@ public class Account {
         }
     }
 
-    public void withdraw(double sum, WithdrawalStrategy strategy, double companyOverdraftDiscount) {
-        strategy.withdraw(this, sum, companyOverdraftDiscount);
+    public void withdraw(Money amount, WithdrawalStrategy strategy, double companyOverdraftDiscount) {
+        if (!money.hasSameCurrency(amount.getCurrency())) {
+            throw new RuntimeException("Can't extract withdraw " + amount.getCurrency());
+        }
+        strategy.withdraw(this, amount, companyOverdraftDiscount);
     }
 
     public String printAccountInfo() {

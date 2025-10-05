@@ -1,16 +1,12 @@
 public class CompanyNormalWithdrawal implements WithdrawalStrategy {
 
     @Override
-    public void withdraw(Account account, double sum, double companyOverdraftDiscount) {
-        if (isInOverdraft(account)) {
-            double overdraftFeeWithDiscount = sum * account.overdraftFee() * companyOverdraftDiscount;
-            account.setMoney(account.getMoney() - sum - overdraftFeeWithDiscount);
+    public void withdraw(Account account, Money amount, double companyOverdraftDiscount) {
+        if (account.getMoneyObject().isNegative()) {
+            double overdraftFeeWithDiscount = amount.getAmount() * account.overdraftFee() * companyOverdraftDiscount;
+            account.setMoney(account.getMoney() - amount.getAmount() - overdraftFeeWithDiscount);
         } else {
-            account.setMoney(account.getMoney() - sum);
+            account.setMoney(account.getMoney() - amount.getAmount());
         }
-    }
-
-    private boolean isInOverdraft(Account account) {
-        return account.getMoney() < 0;
     }
 }

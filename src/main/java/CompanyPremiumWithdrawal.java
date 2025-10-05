@@ -1,17 +1,13 @@
 public class CompanyPremiumWithdrawal implements WithdrawalStrategy {
 
     @Override
-    public void withdraw(Account account, double sum, double companyOverdraftDiscount) {
-        if (isInOverdraft(account)) {
-            double overdraftFeeWithPremiumDiscount = sum * account.overdraftFee() * companyOverdraftDiscount / 2;
-            account.setMoney(account.getMoney() - sum - overdraftFeeWithPremiumDiscount);
+    public void withdraw(Account account, Money amount, double companyOverdraftDiscount) {
+        if (account.getMoneyObject().isNegative()) {
+            double overdraftFeeWithPremiumDiscount = amount.getAmount() * account.overdraftFee() * companyOverdraftDiscount / 2;
+            account.setMoney(account.getMoney() - amount.getAmount() - overdraftFeeWithPremiumDiscount);
         } else {
-            account.setMoney(account.getMoney() - sum);
+            account.setMoney(account.getMoney() - amount.getAmount());
         }
-    }
-
-    private boolean isInOverdraft(Account account) {
-        return account.getMoney() < 0;
     }
 }
 

@@ -28,17 +28,10 @@ public class Customer {
     }
 
     public void withdraw(double sum, String currency) {
-        validateCurrency(currency);
-        account.withdraw(sum, withdrawalStrategy, companyOverdraftDiscount);
+        Money amount = new Money(sum, currency);
+        account.withdraw(amount, withdrawalStrategy, companyOverdraftDiscount);
     }
 
-    private void validateCurrency(String currency) {
-        if (!account.getCurrency().equals(currency)) {
-            throw new RuntimeException("Can't extract withdraw " + currency);
-        }
-    }
-
-    // MOVED FROM Account - uses only Customer data
     public String printCustomer() {
         return name + " " + email;
     }
