@@ -18,11 +18,6 @@ public class CustomerPrinter {
                 + ", Money: " + account.getMoney();
     }
 
-    public String printCustomerAccount() {
-        return "Account: IBAN: " + account.getIban() + ", Money: "
-                + account.getMoney() + ", Account type: " + account.getType();
-    }
-
     private String getFullName() {
         return customer.getName() + " " + customer.getSurname() + " ";
     }

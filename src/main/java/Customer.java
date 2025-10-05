@@ -32,7 +32,7 @@ public class Customer {
 
     public void withdraw(double sum, String currency) {
         validateCurrency(currency);
-        withdrawalStrategy.withdraw(account, sum, companyOverdraftDiscount);
+        account.withdraw(sum, withdrawalStrategy, companyOverdraftDiscount);
     }
 
     private void validateCurrency(String currency) {
@@ -78,6 +78,6 @@ public class Customer {
     }
 
     public String printCustomerAccount() {
-        return printer.printCustomerAccount();
+        return account.printAccountInfo();
     }
 }
