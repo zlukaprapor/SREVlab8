@@ -26,45 +26,53 @@ public class Customer {
     }
 
     public void withdraw(double sum, String currency) {
-        validateCurrency(currency);
-
-        if (account.getMoney() < 0) {
-            withdrawWithOverdraft(sum);
-        } else {
-            withdrawNormal(sum);
-        }
-    }
-
-    private void validateCurrency(String currency) {
         if (!account.getCurrency().equals(currency)) {
             throw new RuntimeException("Can't extract withdraw " + currency);
         }
-    }
-
-    private void withdrawWithOverdraft(double sum) {
-        double overdraftFee = calculateOverdraftFee(sum);
-        account.setMoney(account.getMoney() - sum - overdraftFee);
-    }
-
-    private void withdrawNormal(double sum) {
-        account.setMoney(account.getMoney() - sum);
-    }
-
-    private double calculateOverdraftFee(double sum) {
-        double baseFee = sum * account.overdraftFee();
-
-        if (customerType == CustomerType.COMPANY) {
-            return calculateCompanyOverdraftFee(baseFee);
-        }
-
-        return baseFee;
-    }
-
-    private double calculateCompanyOverdraftFee(double baseFee) {
         if (account.getType().isPremium()) {
-            return baseFee * companyOverdraftDiscount / 2;
+            switch (customerType) {
+                case COMPANY:
+                    // we are in overdraft
+                    if (account.getMoney() < 0) {
+                        // 50 percent discount for overdraft for premium account
+                        account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee() * companyOverdraftDiscount / 2);
+                    } else {
+                        account.setMoney(account.getMoney() - sum);
+                    }
+                    break;
+                case PERSON:
+
+                    // we are in overdraft
+                    if (account.getMoney() < 0) {
+                        account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee());
+                    } else {
+                        account.setMoney(account.getMoney() - sum);
+                    }
+                    break;
+            }
+
+        } else {
+
+            switch (customerType) {
+                case COMPANY:
+                    // we are in overdraft
+                    if (account.getMoney() < 0) {
+                        // no discount for overdraft for not premium account
+                        account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee() * companyOverdraftDiscount);
+                    } else {
+                        account.setMoney(account.getMoney() - sum);
+                    }
+                    break;
+                case PERSON:
+                    // we are in overdraft
+                    if (account.getMoney() < 0) {
+                        account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee());
+                    } else {
+                        account.setMoney(account.getMoney() - sum);
+                    }
+                    break;
+            }
         }
-        return baseFee * companyOverdraftDiscount;
     }
 
     public String getName() {
@@ -92,11 +100,11 @@ public class Customer {
     }
 
     public String printCustomerDaysOverdrawn() {
-        return getFullName() + getAccountDaysOverdrawnDescription();
+        return getFullName() + "Account: IBAN: " + account.getIban() + ", Days Overdrawn: " + account.getDaysOverdrawn();
     }
 
     public String printCustomerMoney() {
-        return getFullName() + getAccountMoneyDescription();
+        return getFullName() + "Account: IBAN: " + account.getIban() + ", Money: " + account.getMoney();
     }
 
     public String printCustomerAccount() {
@@ -104,15 +112,8 @@ public class Customer {
                 + account.getMoney() + ", Account type: " + account.getType();
     }
 
+    // EXTRACTED METHOD - removes duplication
     private String getFullName() {
         return name + " " + surname + " ";
-    }
-
-    private String getAccountDaysOverdrawnDescription() {
-        return "Account: IBAN: " + account.getIban() + ", Days Overdrawn: " + account.getDaysOverdrawn();
-    }
-
-    private String getAccountMoneyDescription() {
-        return "Account: IBAN: " + account.getIban() + ", Money: " + account.getMoney();
     }
 }
