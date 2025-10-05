@@ -3,8 +3,7 @@ public class Account {
     private String iban;
     private AccountType type;
     private int daysOverdrawn;
-    private double money;
-    private String currency;
+    private Money money;
     private Customer customer;
 
     public Account(AccountType type, int daysOverdrawn) {
@@ -45,12 +44,10 @@ public class Account {
         return "Account: IBAN: " + iban + ", Money: " + money + ", Account type: " + type;
     }
 
-    // MOVED FROM CustomerPrinter - uses only Account data
     public String printAccountDaysOverdrawn() {
         return "Account: IBAN: " + iban + ", Days Overdrawn: " + daysOverdrawn;
     }
 
-    // MOVED FROM CustomerPrinter - uses only Account data
     public String printAccountMoney() {
         return "Account: IBAN: " + iban + ", Money: " + money;
     }
@@ -67,12 +64,23 @@ public class Account {
         this.iban = iban;
     }
 
-    public void setMoney(double money) {
-        this.money = money;
+    public void setMoney(double amount) {
+        if (this.money == null) {
+            throw new RuntimeException("Currency not set");
+        }
+        this.money = new Money(amount, this.money.getCurrency());
     }
 
     public double getMoney() {
+        return money.getAmount();
+    }
+
+    public Money getMoneyObject() {
         return money;
+    }
+
+    public void setMoneyObject(Money money) {
+        this.money = money;
     }
 
     public Customer getCustomer() {
@@ -88,10 +96,14 @@ public class Account {
     }
 
     public String getCurrency() {
-        return currency;
+        return money != null ? money.getCurrency() : null;
     }
 
     public void setCurrency(String currency) {
-        this.currency = currency;
+        if (this.money == null) {
+            this.money = new Money(0, currency);
+        } else {
+            this.money = new Money(this.money.getAmount(), currency);
+        }
     }
 }
