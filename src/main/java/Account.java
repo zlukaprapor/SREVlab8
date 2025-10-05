@@ -6,10 +6,16 @@ public class Account {
     private Money money;
     private Customer customer;
 
-    public Account(boolean premium, int daysOverdrawn) {
-        super();
-        this.premium = premium;
+    public Account(AccountType accountType, int daysOverdrawn) {
+        this.premium = accountType.isPremium();
         this.daysOverdrawn = daysOverdrawn;
+    }
+
+    public String printCustomer() {
+        if (customer == null) {
+            throw new RuntimeException("No customer assigned to account");
+        }
+        return customer.printCustomer();
     }
 
     public double bankcharge() {
@@ -44,7 +50,7 @@ public class Account {
     }
 
     public String printAccountInfo() {
-        return "Account: IBAN: " + iban + ", Money: " + money + ", Account type: " + getTypeAsString();
+        return "Account: IBAN: " + iban + ", Money: " + money.getAmount() + ", Account type: " + getTypeAsString();
     }
 
     public String printAccountDaysOverdrawn() {
@@ -52,7 +58,7 @@ public class Account {
     }
 
     public String printAccountMoney() {
-        return "Account: IBAN: " + iban + ", Money: " + money;
+        return "Account: IBAN: " + iban + ", Money: " + money.getAmount();
     }
 
     public int getDaysOverdrawn() {
@@ -69,9 +75,11 @@ public class Account {
 
     public void setMoney(double amount) {
         if (this.money == null) {
-            throw new RuntimeException("Currency not set");
+            // якщо валюта ще не встановлена, створюємо з умовною "EUR" або null
+            this.money = new Money(amount, "EUR");
+        } else {
+            this.money = new Money(amount, this.money.getCurrency());
         }
-        this.money = new Money(amount, this.money.getCurrency());
     }
 
     public double getMoney() {
