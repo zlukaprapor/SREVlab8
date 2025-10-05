@@ -70,41 +70,43 @@ public class Customer {
     }
 
     private void withdrawCompanyPremium(double sum) {
-        // we are in overdraft
-        if (account.getMoney() < 0) {
-            // 50 percent discount for overdraft for premium account
-            account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee() * companyOverdraftDiscount / 2);
+        if (isInOverdraft()) {
+            double overdraftFeeWithPremiumDiscount = sum * account.overdraftFee() * companyOverdraftDiscount / 2;
+            account.setMoney(account.getMoney() - sum - overdraftFeeWithPremiumDiscount);
         } else {
             account.setMoney(account.getMoney() - sum);
         }
     }
 
     private void withdrawPersonPremium(double sum) {
-        // we are in overdraft
-        if (account.getMoney() < 0) {
-            account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee());
+        if (isInOverdraft()) {
+            double overdraftFee = sum * account.overdraftFee();
+            account.setMoney(account.getMoney() - sum - overdraftFee);
         } else {
             account.setMoney(account.getMoney() - sum);
         }
     }
 
     private void withdrawCompanyNormal(double sum) {
-        // we are in overdraft
-        if (account.getMoney() < 0) {
-            // no discount for overdraft for not premium account
-            account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee() * companyOverdraftDiscount);
+        if (isInOverdraft()) {
+            double overdraftFeeWithDiscount = sum * account.overdraftFee() * companyOverdraftDiscount;
+            account.setMoney(account.getMoney() - sum - overdraftFeeWithDiscount);
         } else {
             account.setMoney(account.getMoney() - sum);
         }
     }
 
     private void withdrawPersonNormal(double sum) {
-        // we are in overdraft
-        if (account.getMoney() < 0) {
-            account.setMoney((account.getMoney() - sum) - sum * account.overdraftFee());
+        if (isInOverdraft()) {
+            double overdraftFee = sum * account.overdraftFee();
+            account.setMoney(account.getMoney() - sum - overdraftFee);
         } else {
             account.setMoney(account.getMoney() - sum);
         }
+    }
+
+    private boolean isInOverdraft() {
+        return account.getMoney() < 0;
     }
 
     public String getName() {
